@@ -1,0 +1,14 @@
+# Windows files
+[*.bat]
+end_of_line = crlf
+
+[*.*]
+tab_width = 4
+indent_style = tab
+
+[*]
+tab_width = 4
+indent_style = tab
+
+tab_width = 4
+indent_style = tab

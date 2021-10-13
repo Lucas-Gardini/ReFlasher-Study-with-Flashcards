@@ -13,16 +13,14 @@ const lightThemeIcon = props => <Icon {...props} name="sun" />;
 
 const darkThemeIcon = props => <Icon {...props} name="moon" />;
 
-export default ({theme, toggleTheme}) => {
+const hamburgerIcon = props => <Icon {...props} name="menu" />;
+
+export default ({theme, toggleTheme, toggleDrawer, user}) => {
 	const [menuVisible, setMenuVisible] = React.useState(false);
 
 	const toggleMenu = () => {
 		setMenuVisible(!menuVisible);
 	};
-
-	const renderMenuAction = () => (
-		<TopNavigationAction icon={MenuIcon} onPress={toggleMenu} />
-	);
 
 	const renderThemeChanger = () => (
 		<Button
@@ -35,6 +33,14 @@ export default ({theme, toggleTheme}) => {
 
 	const renderTitle = props => (
 		<View style={styles.titleContainer}>
+			{user && (
+				<Button
+					accessoryLeft={hamburgerIcon}
+					appearance={"ghost"}
+					onPress={() => {
+						toggleDrawer();
+					}}></Button>
+			)}
 			<Avatar
 				style={styles.logo}
 				source={require("../assets/logo.png")}
@@ -47,6 +53,7 @@ export default ({theme, toggleTheme}) => {
 		<TopNavigation
 			title={renderTitle}
 			accessoryRight={renderThemeChanger}
+			style={{borderBottomWidth: 1, borderBottomColor: "black"}}
 		/>
 	);
 };

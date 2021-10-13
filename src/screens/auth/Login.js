@@ -4,20 +4,29 @@ import {
 	StyleSheet,
 	Dimensions,
 	View,
-	Text,
 	TouchableWithoutFeedback,
 } from "react-native";
 
 // UI Framework
-import {Input, Icon, Button} from "@ui-kitten/components";
+import {Input, Icon, Button, Modal, Card, Text} from "@ui-kitten/components";
 
 // Router
-import {Link} from "react-router-native";
+import {useHistory} from "react-router-dom";
+
+// FirebaseAuth
+import {
+	AuthWithGoogle,
+	AuthWithEmailAndPassword,
+} from "../../utils/FirebaseAuth.js";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 export default ({theme}) => {
+	let history = useHistory();
+
+	const [visible, setVisible] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 	const [user, setUser] = useState({
 		email: "",
 		password: "",
@@ -36,6 +45,16 @@ export default ({theme}) => {
 
 	return (
 		<View style={styles.container}>
+			{/* Error Modal */}
+			<Modal
+				visible={visible}
+				backdropStyle={styles.backdrop}
+				onBackdropPress={() => setVisible(false)}>
+				<Card disabled={true}>
+					<Text style={{marginBottom: 20}}>{errorMessage}</Text>
+					<Button onPress={() => setVisible(false)}>OK</Button>
+				</Card>
+			</Modal>
 			<View style={styles.header}>
 				<Text
 					style={{
@@ -87,7 +106,23 @@ export default ({theme}) => {
 					</Button>
 
 					{/* Login Button */}
-					<Button style={styles.loginButton}>Entrar</Button>
+					<Button
+						style={styles.loginButton}
+						onPress={async () => {
+							const ok = await AuthWithEmailAndPassword(
+								user.email,
+								user.password,
+								"signin",
+							);
+							if (!ok) {
+								setErrorMessage(
+									"Email e senha incorretos ou Usuário não existe",
+								);
+								setVisible(true);
+							}
+						}}>
+						Entrar
+					</Button>
 				</View>
 
 				{/* Login with google */}
@@ -97,6 +132,11 @@ export default ({theme}) => {
 						Ou então entre com sua conta Google
 					</Text>
 					<Button
+						onPress={() =>
+							AuthWithGoogle()
+								.then(() => console.log("Login"))
+								.catch(err => console.log(err))
+						}
 						style={{
 							...styles.googleButton,
 							marginTop: deviceHeight * 0.05,
@@ -105,16 +145,16 @@ export default ({theme}) => {
 						appearance="ghost"
 						accessoryLeft={<Icon name="google" />}></Button>
 				</View>
-
-				<Link to="/auth/register">
-					<Text
-						style={{
-							marginTop: deviceHeight * 0.05,
-							color: theme === "light" ? "#121212" : "#fff",
-						}}>
-						Não tem uma conta? Registrar
-					</Text>
-				</Link>
+				<Text
+					onPress={() => {
+						history.push("/auth/register");
+					}}
+					style={{
+						marginTop: deviceHeight * 0.05,
+						color: theme === "light" ? "#121212" : "#fff",
+					}}>
+					Não tem uma conta? Registrar
+				</Text>
 			</View>
 		</View>
 	);

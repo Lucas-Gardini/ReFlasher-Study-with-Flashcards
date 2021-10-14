@@ -44,6 +44,7 @@ export default ({theme, toggleTheme, toggleDrawer, user}) => {
 			<Avatar
 				style={styles.logo}
 				source={require("../assets/logo.png")}
+				shape="square"
 			/>
 			<Text {...props}>ReFlasher</Text>
 		</View>
@@ -65,5 +66,6 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		marginHorizontal: 16,
+		transform: [{scale: 0.8}],
 	},
 });

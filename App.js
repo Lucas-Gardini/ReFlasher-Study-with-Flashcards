@@ -117,6 +117,9 @@ export default () => {
 						logout={() => {
 							auth().signOut();
 						}}
+						onRedirect={() => {
+							setDrawer(false);
+						}}
 					/>
 					{/* If user is not logged in, show AuthLogin screen */}
 					{!user ? (
@@ -157,6 +160,19 @@ export default () => {
 								)}
 							/>
 						</View>
+					)}
+					{drawer && (
+						<View
+							style={{
+								position: "absolute",
+								top: 0,
+								left: 0,
+								width: deviceWidth,
+								height: deviceHeight,
+								backgroundColor:
+									theme === "light" ? "#aaa" : "#000",
+								opacity: drawer ? 0.5 : 0,
+							}}></View>
 					)}
 				</Layout>
 			</ApplicationProvider>

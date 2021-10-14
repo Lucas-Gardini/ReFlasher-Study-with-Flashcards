@@ -2,8 +2,11 @@ import React, {useRef, useEffect, useState} from "react";
 import {StyleSheet, Animated, View} from "react-native";
 import {Avatar, Text, Button, Icon} from "@ui-kitten/components";
 import {Drawer} from "react-native-paper";
+import {useHistory} from "react-router-dom";
 
-export default ({drawer, theme, deviceSize, user, logout}) => {
+export default ({drawer, theme, deviceSize, user, logout, onRedirect}) => {
+	let history = useHistory();
+
 	// Controlling the animation
 	const [firstTime, setFirstTime] = useState(true);
 	const showOpacityAnim = useRef(new Animated.Value(0)).current;
@@ -42,6 +45,11 @@ export default ({drawer, theme, deviceSize, user, logout}) => {
 
 	const logoutIcon = props => <Icon {...props} name="log-out" />;
 
+	const redirect = route => {
+		onRedirect();
+		history.push(route);
+	};
+
 	return (
 		user &&
 		!firstTime && (
@@ -54,8 +62,8 @@ export default ({drawer, theme, deviceSize, user, logout}) => {
 					zIndex: 9,
 					height: deviceSize.height,
 					maxHeight: deviceSize.height,
-					width: deviceSize.width * 0.5,
-					maxWidth: deviceSize.width * 0.5,
+					width: deviceSize.width * 0.7,
+					maxWidth: deviceSize.width * 0.7,
 					backgroundColor: theme === "light" ? "#fff" : "#222B44",
 					borderRightWidth: 1,
 					borderRightColor: "black",
@@ -84,22 +92,20 @@ export default ({drawer, theme, deviceSize, user, logout}) => {
 							</Text>
 						</View>
 						<Drawer.Item
-							label="First Item"
-							onPress={() => setDrawer("first")}
-						/>
-						<Drawer.Item
-							label="Second Item"
-							onPress={() => setDrawer("second")}
-						/>
-
-						{/* Logout */}
-						<Drawer.Item
-							label="Logout"
-							onPress={() => setDrawer("second")}
+							label={<Text>Início</Text>}
+							icon={() => (
+								<Icon
+									style={{width: 32, height: 32}}
+									fill="#8F9BB3"
+									name="home"
+								/>
+							)}
+							onPress={() => redirect("/")}
 						/>
 						<Button
 							style={{
 								marginTop: "auto",
+								marginBottom: 2,
 								borderRadius: 0,
 							}}
 							accessoryLeft={logoutIcon}
@@ -122,6 +128,7 @@ const styles = StyleSheet.create({
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
+		marginBottom: 20,
 	},
 	avatar: {
 		margin: 8,

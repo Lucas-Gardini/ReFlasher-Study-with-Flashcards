@@ -19,6 +19,7 @@ import {NativeRouter, Route} from "react-router-native";
 import AuthLogin from "./src/screens/auth/Login.js";
 import AuthRegister from "./src/screens/auth/Register.js";
 import Home from "./src/screens/home/Home.js";
+import Collection from "./src/screens/collection/Collection.js";
 
 // Components
 import AppBar from "./src/components/AppBar.js";
@@ -154,6 +155,17 @@ export default () => {
 								path="/"
 								render={props => (
 									<Home
+										{...props}
+										theme={theme}
+										user={user}
+									/>
+								)}
+							/>
+							<Route
+								exact
+								path="/collection/:id"
+								render={props => (
+									<Collection
 										{...props}
 										theme={theme}
 										user={user}

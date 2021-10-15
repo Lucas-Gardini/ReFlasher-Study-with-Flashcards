@@ -81,7 +81,7 @@ export default () => {
 						alignItems: "center",
 						justifyContent: "center",
 					}}>
-					<Spinner status={"success"} size={"giant"} />
+					<Spinner size={"giant"} />
 				</View>
 			</ApplicationProvider>
 		);
@@ -115,6 +115,7 @@ export default () => {
 						}}
 						user={user}
 						logout={() => {
+							setDrawer(false);
 							auth().signOut();
 						}}
 						onRedirect={() => {

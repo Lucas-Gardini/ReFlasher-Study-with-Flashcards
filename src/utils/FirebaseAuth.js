@@ -19,7 +19,7 @@ export async function AuthWithGoogle() {
 	auth()
 		.signInWithCredential(googleCredential)
 		.then(user => {
-			console.log("User signed in with Google", user);
+			console.log("User signed in with Google", user.user.displayName);
 		})
 		.catch(error => {
 			console.log(error);

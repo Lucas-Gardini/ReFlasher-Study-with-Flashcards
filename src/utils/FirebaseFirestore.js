@@ -13,3 +13,18 @@ export async function getUserCollections({user_id}) {
 		return [];
 	}
 }
+
+export async function createNewCollection({user_id, collection_name}) {
+	console.log(user_id, collection_name);
+	try {
+		flashcards.add({
+			user_id,
+			name: collection_name,
+			flashcards: [],
+		});
+		return true;
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+}

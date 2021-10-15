@@ -1,12 +1,6 @@
 // React
 import React, {useState, useEffect} from "react";
-import {
-	StyleSheet,
-	Dimensions,
-	View,
-	ScrollView,
-	TouchableWithoutFeedback,
-} from "react-native";
+import {StyleSheet, Dimensions, View, ScrollView} from "react-native";
 
 // UI Framework
 import {
@@ -17,13 +11,17 @@ import {
 	IndexPath,
 	Select,
 	SelectItem,
+	Modal,
+	Card,
+	Spinner,
 } from "@ui-kitten/components";
-
-// Router
-import {Link} from "react-router-native";
+import {Divider} from "react-native-paper";
 
 // Firebase
-import {getUserCollections} from "../../utils/FirebaseFirestore.js";
+import {
+	getUserCollections,
+	createNewCollection,
+} from "../../utils/FirebaseFirestore.js";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -34,11 +32,18 @@ export default ({theme, user}) => {
 		new IndexPath(0),
 	);
 	const [userCollections, setUserCollections] = useState([]);
+	const [newCollectionModal, setNewCollectionModal] = useState(false);
+	const [newCollectionName, setNewCollectionName] = useState("");
+	const [formValidated, setFormValidated] = useState({
+		validated: false,
+		correct: false,
+	});
+	const [loadingCollection, setLoadingCollection] = useState(false);
 
 	useEffect(() => {
 		console.log(user.uid);
 		getUserCollections({user_id: user.uid}).then(collections => {
-			console.log(collections);
+			console.log(JSON.stringify(collections));
 			setUserCollections(collections);
 		});
 	}, []);
@@ -47,12 +52,126 @@ export default ({theme, user}) => {
 	const ArrowUpIcon = props => <Icon {...props} name={"arrow-up"} />;
 	const ArrowDownIcon = props => <Icon {...props} name={"arrow-down"} />;
 	const AtIcon = props => <Icon {...props} name={"at"} />;
+	const PlusIcon = props => <Icon {...props} name={"plus-circle"} />;
+	const CheckIcon = props => <Icon {...props} name={"checkmark-circle-2"} />;
+	const CancelIcon = props => <Icon {...props} name={"close-circle"} />;
+	const BookIcon = props => <Icon {...props} name={"book"} />;
 
 	return (
 		<ScrollView style={styles.home}>
-			<Text style={{fontSize: 20, marginTop: deviceHeight * 0.01}}>
-				Minhas Coleções
-			</Text>
+			<View
+				style={{
+					display: "flex",
+					flexDirection: "row",
+					marginTop: deviceHeight * 0.01,
+				}}>
+				<Text style={{fontSize: 20, marginTop: deviceHeight * 0.01}}>
+					Minhas Coleções
+				</Text>
+				<Button
+					style={{marginLeft: "auto"}}
+					accessoryLeft={PlusIcon}
+					onPress={() => {
+						setNewCollectionModal(true);
+					}}>
+					Nova
+				</Button>
+			</View>
+
+			{/* New Collection Modal */}
+			<Modal visible={newCollectionModal} backdropStyle={styles.backdrop}>
+				<Card disabled={true}>
+					{loadingCollection ? (
+						<Spinner size="giant" />
+					) : (
+						<View>
+							<Text style={{fontSize: 20}}>
+								Criando nova coleção
+							</Text>
+							<Divider />
+							<Input
+								style={{
+									marginTop: deviceHeight * 0.02,
+									marginBottom: deviceHeight * 0.05,
+								}}
+								label={"Novo Nome"}
+								placeholder="Digite aqui..."
+								value={newCollectionName}
+								secureTextEntry={false}
+								onChangeText={newCollectioNName =>
+									setNewCollectionName(newCollectioNName)
+								}
+								accessoryLeft={BookIcon}
+								editable={true}
+								status={
+									formValidated.validated
+										? formValidated.correct
+											? "success"
+											: "danger"
+										: "basic"
+								}
+								caption={
+									formValidated.validated
+										? formValidated.correct
+											? ""
+											: "Preencha este campo!"
+										: ""
+								}
+							/>
+							<View
+								style={{display: "flex", flexDirection: "row"}}>
+								<Button
+									style={{marginRight: 10}}
+									status={"success"}
+									accessoryLeft={CheckIcon}
+									onPress={async () => {
+										if (newCollectionName.length > 0) {
+											setLoadingCollection(true);
+											setFormValidated({
+												validated: true,
+												correct: true,
+											});
+
+											const success =
+												await createNewCollection({
+													user_id: user.uid,
+													collection_name:
+														newCollectionName,
+												});
+											setLoadingCollection(false);
+											if (success) {
+												setNewCollectionModal(false);
+											} else {
+												setNewCollectionModal(true);
+											}
+										} else {
+											setFormValidated({
+												validated: true,
+												correct: false,
+											});
+										}
+									}}>
+									Confirmar
+								</Button>
+								<Button
+									style={{marginLeft: 10}}
+									status={"danger"}
+									accessoryLeft={CancelIcon}
+									onPress={() => {
+										setNewCollectionModal(false);
+										setNewCollectionName("");
+										setFormValidated({
+											validated: false,
+											correct: false,
+										});
+									}}>
+									Cancelar
+								</Button>
+							</View>
+						</View>
+					)}
+				</Card>
+			</Modal>
 
 			{/* Search Area */}
 			<View style={styles.searchArea}>
@@ -79,6 +198,8 @@ export default ({theme, user}) => {
 					style={styles.search}
 					accessoryLeft={SearchIcon}></Button>
 			</View>
+
+			<Divider />
 		</ScrollView>
 	);
 };
@@ -113,5 +234,8 @@ const styles = StyleSheet.create({
 		width: "15%",
 		height: deviceHeight * 0.001,
 		marginTop: "auto",
+	},
+	backdrop: {
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
 	},
 });

@@ -17,16 +17,22 @@ import {
 } from "@ui-kitten/components";
 import {Divider} from "react-native-paper";
 
+// Router
+import {useHistory} from "react-router-dom";
+
 // Firebase
 import {
 	getUserCollections,
 	createNewCollection,
+	deleteCollection,
 } from "../../utils/FirebaseFirestore.js";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
 export default ({theme, user}) => {
+	let history = useHistory();
+
 	const [query, setQuery] = useState("");
 	const [selectedIndexOfOrder, setSelectedIndexOfOrder] = useState(
 		new IndexPath(0),
@@ -39,11 +45,16 @@ export default ({theme, user}) => {
 		correct: false,
 	});
 	const [loadingCollection, setLoadingCollection] = useState(false);
+	const [deletingCollectionModal, setDeletingCollectionModal] =
+		useState(false);
+	const [deletingCollection, setDeletingCollection] = useState({
+		name: "",
+		id: "",
+		flashcardsQuantity: 0,
+	});
 
 	useEffect(() => {
-		console.log(user.uid);
 		getUserCollections({user_id: user.uid}).then(collections => {
-			console.log(JSON.stringify(collections));
 			setUserCollections(collections);
 		});
 	}, []);
@@ -56,6 +67,44 @@ export default ({theme, user}) => {
 	const CheckIcon = props => <Icon {...props} name={"checkmark-circle-2"} />;
 	const CancelIcon = props => <Icon {...props} name={"close-circle"} />;
 	const BookIcon = props => <Icon {...props} name={"book"} />;
+
+	// Card Components
+	const Header = ({name, flashcardsLength}) => (
+		<View>
+			<Text category="h6" style={{margin: 10, marginBottom: 2.5}}>
+				{name}
+			</Text>
+			<Text category="s1" style={{margin: 10, marginTop: 2.5}}>
+				Quantidade de Flashcards: {flashcardsLength}
+			</Text>
+		</View>
+	);
+	const Footer = ({name, collectionID, flashcardsLength}) => (
+		<View style={styles.footerContainer}>
+			<Button
+				style={styles.footerControl}
+				size="small"
+				status="danger"
+				onPress={() => {
+					setDeletingCollectionModal(true);
+					setDeletingCollection({
+						name,
+						id: collectionID,
+						flashcardsQuantity: flashcardsLength,
+					});
+				}}>
+				Excluir
+			</Button>
+			<Button
+				style={styles.footerControl}
+				size="small"
+				onPress={() => {
+					history.push(`/collection/${collectionID}`);
+				}}>
+				Acessar
+			</Button>
+		</View>
+	);
 
 	return (
 		<ScrollView style={styles.home}>
@@ -138,9 +187,23 @@ export default ({theme, user}) => {
 													collection_name:
 														newCollectionName,
 												});
-											setLoadingCollection(false);
 											if (success) {
-												setNewCollectionModal(false);
+												setNewCollectionName("");
+												setFormValidated({
+													validated: false,
+													correct: false,
+												});
+												getUserCollections({
+													user_id: user.uid,
+												}).then(collections => {
+													setUserCollections(
+														collections,
+													);
+													setLoadingCollection(false);
+													setNewCollectionModal(
+														false,
+													);
+												});
 											} else {
 												setNewCollectionModal(true);
 											}
@@ -164,6 +227,91 @@ export default ({theme, user}) => {
 											validated: false,
 											correct: false,
 										});
+									}}>
+									Cancelar
+								</Button>
+							</View>
+						</View>
+					)}
+				</Card>
+			</Modal>
+
+			{/* Deleting Collection Modal */}
+			<Modal
+				visible={deletingCollectionModal}
+				backdropStyle={styles.backdrop}>
+				<Card disabled={true}>
+					{loadingCollection ? (
+						<Spinner size="giant" />
+					) : (
+						<View>
+							<Text style={{fontSize: 20}}>
+								Excluindo coleção
+							</Text>
+							<Divider
+								style={{
+									height: 2.5,
+									backgroundColor:
+										theme === "light" ? "#000" : "#fff",
+									marginTop: deviceHeight * 0.001,
+									marginBottom: deviceHeight * 0.03,
+								}}
+							/>
+							<Text
+								style={{
+									fontSize: 16,
+									marginBottom: deviceHeight * 0.01,
+								}}>
+								Deseja realmente excluir a coleção:{" "}
+								{deletingCollection.name}?
+							</Text>
+							<Text style={{fontSize: 14}}>
+								A coleção conta atualmente com{" "}
+								{deletingCollection.flashcardsQuantity}{" "}
+								flashcards.
+							</Text>
+							<View
+								style={{
+									display: "flex",
+									flexDirection: "row",
+									marginTop: deviceHeight * 0.02,
+								}}>
+								<Button
+									style={{marginRight: 10}}
+									status={"success"}
+									accessoryLeft={CheckIcon}
+									onPress={async () => {
+										const success = await deleteCollection({
+											collection_id:
+												deletingCollection.id,
+										});
+										if (success) {
+											getUserCollections({
+												user_id: user.uid,
+											}).then(collections => {
+												setUserCollections(collections);
+												setLoadingCollection(false);
+												setDeletingCollectionModal(
+													false,
+												);
+											});
+										} else {
+											setDeletingCollectionModal(true);
+										}
+									}}>
+									Confirmar
+								</Button>
+								<Button
+									style={{marginLeft: 10}}
+									status={"danger"}
+									accessoryLeft={CancelIcon}
+									onPress={() => {
+										setDeletingCollection({
+											flashcardsQuantity: 0,
+											name: "",
+											id: "",
+										});
+										setDeletingCollectionModal(false);
 									}}>
 									Cancelar
 								</Button>
@@ -199,7 +347,36 @@ export default ({theme, user}) => {
 					accessoryLeft={SearchIcon}></Button>
 			</View>
 
-			<Divider />
+			<Divider
+				style={{
+					height: 2.5,
+					backgroundColor: theme === "light" ? "#000" : "#fff",
+					marginBottom: deviceHeight * 0.04,
+				}}
+			/>
+			{/* Collections Area */}
+			{userCollections.map((collection, index) => (
+				<Card
+					status={theme === "light" ? "primary" : "info"}
+					key={index}
+					style={{
+						...styles.card,
+						borderColor: theme === "light" ? "#000" : "#fff",
+						borderTopWidth: 0,
+					}}
+					header={
+						<Header
+							name={collection.name}
+							flashcardsLength={collection.flashcards.length}
+						/>
+					}>
+					<Footer
+						name={collection.name}
+						flashcardsLength={collection.flashcards.length}
+						collectionID={collection.id}
+					/>
+				</Card>
+			))}
 		</ScrollView>
 	);
 };
@@ -237,5 +414,16 @@ const styles = StyleSheet.create({
 	},
 	backdrop: {
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	card: {
+		flex: 1,
+		margin: 2,
+	},
+	footerContainer: {
+		flexDirection: "row",
+		justifyContent: "flex-end",
+	},
+	footerControl: {
+		marginHorizontal: 2,
 	},
 });

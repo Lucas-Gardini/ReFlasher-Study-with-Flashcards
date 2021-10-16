@@ -4,17 +4,14 @@
 
 Simples aplicativo de flashcards que vai te ajudar a estudar!
 
-    
-## Authors
+## Criador
 
-- [@LucasGardiniDias](https://github.com/Lucas-Gardini)
+-   [@LucasGardiniDias](https://github.com/Lucas-Gardini)
 
-  
 ## Screenshots
 
 ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 
-  
 ## FAQ
 
 #### Consigo usar o aplicativo offline?
@@ -33,15 +30,12 @@ Sim! Porém, lembre-se de que esta ação é irreversível e você perderá todo
 
 No momento não. Mas pensarei em alguma solução em tempos futuros
 
-  
 ## Como contribuir
 
 Suas ideias são sempre bem vindas!
 
 Me contate utilizando as informação da seção "Suporte" com o assunto: "Desejo contribuir" e a sua ideia, crítica ou qualquer outra coisa!
 
-  
 ## Suporte
 
 Para obter ajuda mande um email para lucasgardini.dias@hotmail.com ou me adicione no discord KowalskiJr 🐧#6486
-  

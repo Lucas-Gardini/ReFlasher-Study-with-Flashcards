@@ -2,6 +2,7 @@ import firestore from "@react-native-firebase/firestore";
 
 const flashcards = firestore().collection("flashcards");
 
+// Get all user collections
 export async function getUserCollections({user_id}) {
 	try {
 		const userCollections = await flashcards
@@ -20,6 +21,17 @@ export async function getUserCollections({user_id}) {
 	}
 }
 
+// Get all flashcards in a collection, and info about the collection
+export async function getCollection({collection_id}) {
+	try {
+		const collection = flashcards.doc(collection_id).get();
+		return collection.data();
+	} catch (error) {
+		return false;
+	}
+}
+
+// Create a new collection
 export async function createNewCollection({user_id, collection_name}) {
 	console.log(user_id, collection_name);
 	try {
@@ -35,6 +47,7 @@ export async function createNewCollection({user_id, collection_name}) {
 	}
 }
 
+// Delete a collection
 export async function deleteCollection({collection_id}) {
 	try {
 		flashcards.doc(collection_id).delete();

@@ -3,7 +3,7 @@
 
 Simples aplicativo de flashcards que vai te ajudar a estudar!
 
-![Logo](https://github.com/Lucas-Gardini/ReFlasher-Study-with-Flashcards/blob/master/src/assets/logo.png?raw=true)
+![Logo](https://github.com/Lucas-Gardini/ReFlasher-Study-with-Flashcards/blob/master/src/assets/long-logo.png)
 
     
 ## Authors

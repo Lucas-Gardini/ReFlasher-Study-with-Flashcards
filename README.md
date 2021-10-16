@@ -1,9 +1,8 @@
 ![Platforms](https://img.shields.io/badge/platforms-android%20%7C%20web%20%7C%20windows-blue)
-# ReFlasher
-
-Simples aplicativo de flashcards que vai te ajudar a estudar!
 
 ![Logo](https://github.com/Lucas-Gardini/ReFlasher-Study-with-Flashcards/blob/master/src/assets/long-logo.png)
+
+Simples aplicativo de flashcards que vai te ajudar a estudar!
 
     
 ## Authors

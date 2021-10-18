@@ -70,9 +70,6 @@ export default ({theme, user}) => {
 	}, [selectedIndexOfOrder]);
 
 	const SearchIcon = props => <Icon {...props} name={"search"} />;
-	const ArrowUpIcon = props => <Icon {...props} name={"arrow-up"} />;
-	const ArrowDownIcon = props => <Icon {...props} name={"arrow-down"} />;
-	const AtIcon = props => <Icon {...props} name={"at"} />;
 	const PlusIcon = props => <Icon {...props} name={"plus-circle"} />;
 	const CheckIcon = props => <Icon {...props} name={"checkmark-circle-2"} />;
 	const CancelIcon = props => <Icon {...props} name={"close-circle"} />;
@@ -89,9 +86,10 @@ export default ({theme, user}) => {
 						marginLeft: 10,
 						marginTop: 11.5,
 						marginBottom: 2.5,
+						flex: 1,
 					}}>
-					{collection.name.length > 31
-						? collection.name.substring(0, 32) + "..."
+					{collection.name.length > 38
+						? collection.name.substring(0, 37) + "..."
 						: collection.name}
 				</Text>
 				<Button
@@ -607,10 +605,12 @@ const styles = StyleSheet.create({
 		width: "30%",
 		maxHeight: deviceHeight * 0.05,
 	},
+	// Botão
 	search: {
+		position: "relative",
 		width: "15%",
-		height: deviceHeight * 0.001,
-		marginTop: "auto",
+		bottom: 0,
+		top: "43.5%",
 	},
 	backdrop: {
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -618,6 +618,7 @@ const styles = StyleSheet.create({
 	card: {
 		flex: 1,
 		margin: 2,
+		marginBottom: 15,
 	},
 	footerContainer: {
 		flexDirection: "row",

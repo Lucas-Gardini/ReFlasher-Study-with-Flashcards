@@ -72,7 +72,7 @@ export default ({drawer, theme, deviceSize, user, logout, onRedirect}) => {
 					<View
 						style={{
 							display: "flex",
-							height: deviceSize.height * 0.89,
+							height: deviceSize.height,
 						}}>
 						<View style={styles.avatarView}>
 							<Avatar
@@ -90,6 +90,21 @@ export default ({drawer, theme, deviceSize, user, logout, onRedirect}) => {
 									? user.displayName
 									: user.email}
 							</Text>
+							<Button
+								style={{
+									marginTop: "auto",
+									marginBottom: 2,
+									borderRadius: 0,
+									width: "100%",
+								}}
+								accessoryLeft={logoutIcon}
+								appearance={"filled"}
+								status={"danger"}
+								onPress={() => {
+									logout();
+								}}>
+								Sair
+							</Button>
 						</View>
 						<Drawer.Item
 							label={<Text>Início</Text>}
@@ -102,20 +117,6 @@ export default ({drawer, theme, deviceSize, user, logout, onRedirect}) => {
 							)}
 							onPress={() => redirect("/")}
 						/>
-						<Button
-							style={{
-								marginTop: "auto",
-								marginBottom: 2,
-								borderRadius: 0,
-							}}
-							accessoryLeft={logoutIcon}
-							appearance={"filled"}
-							status={"danger"}
-							onPress={() => {
-								logout();
-							}}>
-							Sair
-						</Button>
 					</View>
 				</Drawer.Section>
 			</Animated.View>

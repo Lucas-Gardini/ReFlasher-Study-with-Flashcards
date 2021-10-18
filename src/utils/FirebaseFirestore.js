@@ -28,9 +28,10 @@ export async function getUserCollections({user_id}) {
 // Get all flashcards in a collection, and info about the collection
 export async function getCollection({collection_id}) {
 	try {
-		const collection = flashcards.doc(collection_id).get();
+		const collection = await flashcards.doc(collection_id).get();
 		return collection.data();
 	} catch (error) {
+		console.log(error);
 		return false;
 	}
 }

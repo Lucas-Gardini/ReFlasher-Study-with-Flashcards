@@ -4,6 +4,7 @@ import {
 	StyleSheet,
 	Dimensions,
 	View,
+	ScrollView,
 	TouchableWithoutFeedback,
 } from "react-native";
 
@@ -44,7 +45,7 @@ export default ({theme}) => {
 	);
 
 	return (
-		<View style={styles.container}>
+		<ScrollView>
 			{/* Error Modal */}
 			<Modal
 				visible={visible}
@@ -126,7 +127,7 @@ export default ({theme}) => {
 				</View>
 
 				{/* Login with google */}
-				<View style={{marginTop: 20}}>
+				<View>
 					<Text
 						style={{color: theme === "light" ? "#121212" : "#fff"}}>
 						Ou então entre com sua conta Google
@@ -139,7 +140,6 @@ export default ({theme}) => {
 						}
 						style={{
 							...styles.googleButton,
-							marginTop: deviceHeight * 0.05,
 						}}
 						size={"giant"}
 						appearance="ghost"
@@ -150,26 +150,23 @@ export default ({theme}) => {
 						history.push("/auth/register");
 					}}
 					style={{
-						marginTop: deviceHeight * 0.05,
 						color: theme === "light" ? "#121212" : "#fff",
 					}}>
 					Não tem uma conta? Registrar
 				</Text>
 			</View>
-		</View>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
+		display: "flex",
 	},
 	header: {
 		flex: 1,
-		justifyContent: "center",
 		alignItems: "center",
+		marginTop: 5,
 	},
 	headerTitle: {
 		fontSize: 30,

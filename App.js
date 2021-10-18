@@ -65,8 +65,8 @@ export default () => {
 		if (initializing) setInitializing(false);
 	}
 
-	const deviceWidth = Dimensions.get("window").width;
-	const deviceHeight = Dimensions.get("window").height;
+	const deviceWidth = Dimensions.get("screen").width;
+	const deviceHeight = Dimensions.get("screen").height;
 
 	if (initializing)
 		return (

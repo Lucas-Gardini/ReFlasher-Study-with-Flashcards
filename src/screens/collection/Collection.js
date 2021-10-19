@@ -8,6 +8,9 @@ import {Text, Button, Icon} from "@ui-kitten/components";
 // Firebase
 import {getCollection} from "../../utils/FirebaseFirestore.js";
 
+// New Flashcard
+import NewFlashcard from "../../components/TextEditor/NewFlashcard.js";
+
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 
@@ -38,6 +41,8 @@ export default ({theme, user, match}) => {
 					display: "flex",
 					flexDirection: "row",
 					marginTop: deviceHeight * 0.01,
+					paddingLeft: deviceWidth * 0.05,
+					paddingRight: deviceWidth * 0.05,
 				}}>
 				<Text style={{fontSize: 20, marginTop: deviceHeight * 0.01}}>
 					{collection.name}
@@ -45,23 +50,21 @@ export default ({theme, user, match}) => {
 				<Button
 					style={{marginLeft: "auto"}}
 					accessoryLeft={PlusIcon}
-					onPress={() => {
-						setNewCollectionModal(true);
-					}}>
+					onPress={() => {}}>
 					Nova
 				</Button>
 			</View>
+
+			<NewFlashcard />
 		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	collection: {
-		height: deviceHeight * 0.85,
-		maxHeight: deviceHeight * 0.85,
+		height: deviceHeight,
+		maxHeight: deviceHeight,
 		width: deviceWidth,
 		maxWidth: deviceWidth,
-		paddingLeft: deviceWidth * 0.05,
-		paddingRight: deviceWidth * 0.05,
 	},
 });

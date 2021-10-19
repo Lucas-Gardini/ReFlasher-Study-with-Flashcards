@@ -67,7 +67,7 @@ export default ({theme, user}) => {
 
 	useEffect(() => {
 		queryCollections();
-	}, [selectedIndexOfOrder]);
+	}, [selectedIndexOfOrder, query]);
 
 	const SearchIcon = props => <Icon {...props} name={"search"} />;
 	const PlusIcon = props => <Icon {...props} name={"plus-circle"} />;
@@ -87,6 +87,7 @@ export default ({theme, user}) => {
 						marginTop: 11.5,
 						marginBottom: 2.5,
 						flex: 1,
+						color: "#212B44",
 					}}>
 					{collection.name.length > 38
 						? collection.name.substring(0, 37) + "..."
@@ -101,7 +102,13 @@ export default ({theme, user}) => {
 					appearance={"ghost"}
 					accessoryLeft={EditIcon}></Button>
 			</View>
-			<Text category="s1" style={{margin: 10, marginTop: 2.5}}>
+			<Text
+				category="s1"
+				style={{
+					margin: 10,
+					marginTop: 2.5,
+					color: "#212B44",
+				}}>
 				Quantidade de Flashcards: {collection.flashcards.length}
 			</Text>
 		</View>
@@ -501,7 +508,6 @@ export default ({theme, user}) => {
 			<View style={styles.searchArea}>
 				<Input
 					style={styles.input}
-					label={"Pesquisar"}
 					placeholder="Procurar..."
 					value={query}
 					secureTextEntry={false}
@@ -515,7 +521,6 @@ export default ({theme, user}) => {
 					onSelect={index => {
 						setSelectedIndexOfOrder(index);
 					}}
-					label={"Ordenar"}
 					value={selectedSort}>
 					<SelectItem title={"Novos"} />
 					<SelectItem title={"Antigos"} />
@@ -536,45 +541,49 @@ export default ({theme, user}) => {
 			/>
 
 			{/* Collections Area */}
-			{userCollectionsFiltered.length > 0
-				? userCollectionsFiltered.map((collection, index) => (
-						<Card
-							status={theme === "light" ? "primary" : "info"}
-							key={index}
-							style={{
-								...styles.card,
-								borderColor:
-									theme === "light" ? "#000" : "#fff",
-								borderTopWidth: 0,
-							}}
-							header={<Header collection={collection} />}>
-							<Footer
-								name={collection.name}
-								flashcardsLength={collection.flashcards.length}
-								collectionID={collection.id}
-								collection={collection}
-							/>
-						</Card>
-				  ))
-				: userCollections.map((collection, index) => (
-						<Card
-							status={theme === "light" ? "primary" : "info"}
-							key={index}
-							style={{
-								...styles.card,
-								borderColor:
-									theme === "light" ? "#000" : "#fff",
-								borderTopWidth: 0,
-							}}
-							header={<Header collection={collection} />}>
-							<Footer
-								name={collection.name}
-								flashcardsLength={collection.flashcards.length}
-								collectionID={collection.id}
-								collection={collection}
-							/>
-						</Card>
-				  ))}
+			{userCollectionsFiltered.length > 0 ? (
+				userCollectionsFiltered.map((collection, index) => (
+					<Card
+						status={theme === "light" ? "primary" : "info"}
+						key={index}
+						style={{
+							...styles.card,
+							borderColor: theme === "light" ? "#000" : "#fff",
+							borderTopWidth: 0,
+							backgroundColor: "#fff",
+						}}
+						header={<Header collection={collection} />}>
+						<Footer
+							name={collection.name}
+							flashcardsLength={collection.flashcards.length}
+							collectionID={collection.id}
+							collection={collection}
+						/>
+					</Card>
+				))
+			) : query.length > 0 ? (
+				<Text>Sua pesquisa não retornou nada...</Text>
+			) : (
+				userCollections.map((collection, index) => (
+					<Card
+						status={theme === "light" ? "primary" : "info"}
+						key={index}
+						style={{
+							...styles.card,
+							borderColor: theme === "light" ? "#000" : "#fff",
+							borderTopWidth: 0,
+							backgroundColor: "#fff",
+						}}
+						header={<Header collection={collection} />}>
+						<Footer
+							name={collection.name}
+							flashcardsLength={collection.flashcards.length}
+							collectionID={collection.id}
+							collection={collection}
+						/>
+					</Card>
+				))
+			)}
 		</ScrollView>
 	);
 };
@@ -605,13 +614,12 @@ const styles = StyleSheet.create({
 		width: "30%",
 		maxHeight: deviceHeight * 0.05,
 	},
-	// Botão
-	search: {
-		position: "relative",
-		width: "15%",
-		bottom: 0,
-		top: "43.5%",
-	},
+	// search: {
+	// 	position: "relative",
+	// 	width: "15%",
+	// 	bottom: 0,
+	// 	top: "43.5%",
+	// },
 	backdrop: {
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
 	},

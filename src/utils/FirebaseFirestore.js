@@ -38,7 +38,6 @@ export async function getCollection({collection_id}) {
 
 // Create a new collection
 export async function createNewCollection({user_id, collection_name}) {
-	console.log(user_id, collection_name);
 	try {
 		flashcards.add({
 			user_id,

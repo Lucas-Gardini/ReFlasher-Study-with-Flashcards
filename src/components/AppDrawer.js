@@ -15,7 +15,7 @@ export default ({drawer, theme, deviceSize, user, logout, onRedirect}) => {
 
 	Animated.timing(showOpacityAnim, {
 		toValue: 1,
-		duration: 1000,
+		duration: 500,
 		useNativeDriver: false,
 	}).start();
 	const animatedMoveLeft = Animated.timing(moveLeftAnim, {
@@ -24,7 +24,7 @@ export default ({drawer, theme, deviceSize, user, logout, onRedirect}) => {
 		useNativeDriver: false,
 	});
 	const animatedMoveRight = Animated.timing(moveRightAnim, {
-		toValue: -1000,
+		toValue: -deviceSize.width,
 		duration: 250,
 		useNativeDriver: false,
 	});

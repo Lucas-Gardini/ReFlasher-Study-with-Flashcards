@@ -14,6 +14,7 @@ export default function ({
 	deviceDimensions,
 	flashcardTitle,
 	saveFlashcard,
+	cancelFlashcard,
 }) {
 	const _editor = React.createRef();
 	const imageIcon = require("../../assets/image.png");
@@ -26,6 +27,9 @@ export default function ({
 	};
 
 	const CheckIcon = props => <Icon {...props} name={"checkmark-circle-2"} />;
+	const OptionsIcon = props => (
+		<Icon {...props} name={"settings-2-outline"} />
+	);
 	const CancelIcon = props => <Icon {...props} name={"close-circle"} />;
 
 	return (
@@ -36,6 +40,10 @@ export default function ({
 			enabled={true}>
 			<SafeAreaView
 				style={{flex: 1, height: deviceDimensions.height - 100}}>
+				<Text category={"h6"} style={styles.newFlashcardTitle}>
+					Novo Flashcard:{" "}
+					{String(flashcardTitle).slice(0, 16) + "..."}
+				</Text>
 				<QuillToolbar
 					editor={_editor}
 					options={[
@@ -83,8 +91,10 @@ export default function ({
 						backgroundColor: "#3266FF",
 					}}
 					small
-					icon={() => <Icon fill="#fff" name="checkmark" />}
-					onPress={() => setSavingFlashcard(true)}
+					icon={OptionsIcon}
+					onPress={() => {
+						setSavingFlashcard(true);
+					}}
 				/>
 
 				{/* Saving Flashcard Modal */}
@@ -104,7 +114,8 @@ export default function ({
 									marginTop: deviceDimensions.height * 0.02,
 								}}>
 								<Button
-									style={{marginRight: 10}}
+									style={{margin: 5}}
+									size={"tiny"}
 									status={"success"}
 									accessoryLeft={CheckIcon}
 									onPress={async () => {
@@ -115,11 +126,23 @@ export default function ({
 									Confirmar
 								</Button>
 								<Button
-									style={{marginLeft: 10}}
+									style={{margin: 5}}
+									size={"tiny"}
+									status={"warning"}
+									accessoryLeft={CancelIcon}
+									onPress={() => {
+										setSavingFlashcard(false);
+									}}>
+									Voltar a Editar
+								</Button>
+								<Button
+									style={{margin: 5}}
+									size={"tiny"}
 									status={"danger"}
 									accessoryLeft={CancelIcon}
 									onPress={() => {
 										setSavingFlashcard(false);
+										cancelFlashcard();
 									}}>
 									Cancelar
 								</Button>
@@ -161,10 +184,13 @@ const styles = StyleSheet.create({
 		right: 0,
 		bottom: 40,
 	},
-	// icon: {
-	// 	width: 32,
-	// 	height: 32,
-	// },
+	newFlashcardTitle: {
+		marginLeft: 10,
+		marginRight: 10,
+		marginTop: 5,
+		marginBottom: 5,
+		color: "#121212",
+	},
 	backdrop: {
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
 	},

@@ -1,6 +1,7 @@
 // React
 import React, {useState, useEffect} from "react";
 import {StyleSheet, Dimensions, View, ScrollView} from "react-native";
+import RenderHtml from "react-native-render-html";
 
 // UI Framework
 import {
@@ -33,6 +34,8 @@ export default ({theme, user, match}) => {
 	const [addingNewFlashcard, setAddingNewFlashcard] = useState(false);
 	const [addingNewFlashcardModal, setAddingNewFlashcardModal] =
 		useState(false);
+	const [viewFlashcard, setViewFlashcard] = useState({});
+	const [viewFlashcardModal, setViewFlashcardModal] = useState(false);
 
 	useEffect(() => {
 		queryCollection();
@@ -72,12 +75,18 @@ export default ({theme, user, match}) => {
 			</View>
 		</View>
 	);
-	const Footer = () => (
+	const Footer = ({flashcard}) => (
 		<View style={styles.footerContainer}>
 			<Button style={styles.footerControl} size="small" status="danger">
 				Excluir
 			</Button>
-			<Button style={styles.footerControl} size="small">
+			<Button
+				style={styles.footerControl}
+				size="small"
+				onPress={() => {
+					setViewFlashcard(flashcard);
+					setViewFlashcardModal(true);
+				}}>
 				Acessar
 			</Button>
 		</View>
@@ -101,14 +110,16 @@ export default ({theme, user, match}) => {
 				<Text style={{fontSize: 20, marginTop: deviceHeight * 0.01}}>
 					{collection.name}
 				</Text>
-				<Button
-					style={{marginLeft: "auto"}}
-					accessoryLeft={PlusIcon}
-					onPress={() => {
-						setAddingNewFlashcardModal(true);
-					}}>
-					Novo
-				</Button>
+				{!addingNewFlashcard && (
+					<Button
+						style={{marginLeft: "auto"}}
+						accessoryLeft={PlusIcon}
+						onPress={() => {
+							setAddingNewFlashcardModal(true);
+						}}>
+						Novo
+					</Button>
+				)}
 			</View>
 
 			{/* New Flashcard Modal */}
@@ -149,8 +160,10 @@ export default ({theme, user, match}) => {
 								status={"success"}
 								accessoryLeft={CheckIcon}
 								onPress={() => {
-									setAddingNewFlashcardModal(false);
-									setAddingNewFlashcard(true);
+									if (newFlashcard.title) {
+										setAddingNewFlashcardModal(false);
+										setAddingNewFlashcard(true);
+									}
 								}}>
 								Confirmar
 							</Button>
@@ -207,25 +220,78 @@ export default ({theme, user, match}) => {
 							alert("Erro");
 						}
 					}}
+					cancelFlashcard={() => {
+						setAddingNewFlashcard(false);
+						setNewFlashcard({});
+					}}
 					flashcardTitle={newFlashcard.title}
 				/>
 			)}
 
-			{/* Flashcards */}
-			{collection.flashcards.map((flashcard, index) => (
-				<Card
-					status={theme === "light" ? "primary" : "info"}
-					key={index}
-					style={{
-						...styles.card,
-						borderColor: theme === "light" ? "#000" : "#fff",
-						borderTopWidth: 0,
-						backgroundColor: "#fff",
-					}}
-					header={<Header flashcardTitle={flashcard.title} />}>
-					<Footer />
+			{/* Existing Flashcard Modal */}
+			<Modal visible={viewFlashcardModal} backdropStyle={styles.backdrop}>
+				<Card disabled={true}>
+					<View>
+						<Text style={{fontSize: 20}}>
+							{viewFlashcard.title}
+						</Text>
+						<Divider
+							style={{
+								height: 2.5,
+								backgroundColor:
+									theme === "light" ? "#000" : "#fff",
+								marginBottom: deviceHeight * 0.04,
+							}}
+						/>
+						<View>
+							<RenderHtml
+								source={{html: viewFlashcard.content}}
+								contentWidth={deviceWidth}
+							/>
+						</View>
+						<View
+							style={{
+								display: "flex",
+								flexDirection: "row",
+								marginTop: deviceHeight * 0.02,
+							}}>
+							<Button
+								style={{marginLeft: 10}}
+								status={"danger"}
+								accessoryLeft={CancelIcon}
+								onPress={() => {
+									setViewFlashcardModal(false);
+									setViewFlashcard({});
+								}}>
+								Sair
+							</Button>
+						</View>
+					</View>
 				</Card>
-			))}
+			</Modal>
+
+			{/* Flashcards */}
+			{!addingNewFlashcard && (
+				<ScrollView>
+					{collection.flashcards.map((flashcard, index) => (
+						<Card
+							status={theme === "light" ? "primary" : "info"}
+							key={index}
+							style={{
+								...styles.card,
+								borderColor:
+									theme === "light" ? "#000" : "#fff",
+								borderTopWidth: 0,
+								backgroundColor: "#fff",
+							}}
+							header={
+								<Header flashcardTitle={flashcard.title} />
+							}>
+							<Footer flashcard={flashcard} />
+						</Card>
+					))}
+				</ScrollView>
+			)}
 		</ScrollView>
 	);
 };
@@ -242,7 +308,7 @@ const styles = StyleSheet.create({
 	},
 	card: {
 		flex: 1,
-		margin: 2,
+		margin: 20,
 		marginBottom: 15,
 	},
 	footerContainer: {

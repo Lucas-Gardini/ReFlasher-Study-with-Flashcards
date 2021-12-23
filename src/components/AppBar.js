@@ -26,9 +26,7 @@ export default ({theme, toggleTheme, toggleDrawer, user}) => {
 		<Button
 			accessoryLeft={theme === "light" ? lightThemeIcon : darkThemeIcon}
 			appearance={"ghost"}
-			onPress={() => {
-				toggleTheme();
-			}}></Button>
+			onPressIn={toggleTheme}></Button>
 	);
 
 	const renderTitle = props => (
@@ -37,7 +35,7 @@ export default ({theme, toggleTheme, toggleDrawer, user}) => {
 				<Button
 					accessoryLeft={hamburgerIcon}
 					appearance={"ghost"}
-					onPress={() => {
+					onPressIn={() => {
 						toggleDrawer();
 					}}></Button>
 			)}

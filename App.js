@@ -117,7 +117,9 @@ export default () => {
 						user={user}
 						logout={() => {
 							setDrawer(false);
-							auth().signOut();
+							setTimeout(() => {
+								auth().signOut();
+							}, 900);
 						}}
 						onRedirect={() => {
 							setDrawer(false);
@@ -149,6 +151,7 @@ export default () => {
 							/>
 						</View>
 					) : (
+						// User logged in
 						<View>
 							<Route
 								exact

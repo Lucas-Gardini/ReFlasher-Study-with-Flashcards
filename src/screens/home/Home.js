@@ -66,6 +66,7 @@ export default ({theme, user}) => {
 	}, []);
 
 	useEffect(() => {
+		console.log("Home");
 		queryCollections();
 	}, [selectedIndexOfOrder, query]);
 

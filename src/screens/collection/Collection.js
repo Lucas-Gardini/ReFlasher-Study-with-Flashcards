@@ -36,6 +36,9 @@ export default ({theme, user, match}) => {
 		useState(false);
 	const [viewFlashcard, setViewFlashcard] = useState({});
 	const [viewFlashcardModal, setViewFlashcardModal] = useState(false);
+	const [editingFlashcardNameModal, setEditingFlashcardNameModal] =
+		useState(false);
+	const [editingFlashcardName, setEditingFlashcardName] = useState({});
 
 	useEffect(() => {
 		queryCollection();
@@ -69,6 +72,13 @@ export default ({theme, user, match}) => {
 						: flashcardTitle}
 				</Text>
 				<Button
+					onPress={() => {
+						setEditingFlashcardName({
+							name: flashcardTitle,
+							newName: "",
+						});
+						setEditingFlashcardNameModal(true);
+					}}
 					style={{marginLeft: "auto"}}
 					appearance={"ghost"}
 					accessoryLeft={EditIcon}></Button>
@@ -121,7 +131,6 @@ export default ({theme, user, match}) => {
 					</Button>
 				)}
 			</View>
-
 			{/* New Flashcard Modal */}
 			<Modal
 				visible={addingNewFlashcardModal}
@@ -181,7 +190,6 @@ export default ({theme, user, match}) => {
 					</View>
 				</Card>
 			</Modal>
-
 			{addingNewFlashcard && (
 				<NewFlashcard
 					theme={theme}
@@ -227,7 +235,6 @@ export default ({theme, user, match}) => {
 					flashcardTitle={newFlashcard.title}
 				/>
 			)}
-
 			{/* Existing Flashcard Modal */}
 			<Modal visible={viewFlashcardModal} backdropStyle={styles.backdrop}>
 				<Card disabled={true}>
@@ -243,12 +250,16 @@ export default ({theme, user, match}) => {
 								marginBottom: deviceHeight * 0.04,
 							}}
 						/>
-						<View>
+						<ScrollView
+							style={{
+								maxHeight: deviceHeight * 0.5,
+								minWidth: deviceWidth * 0.7,
+							}}>
 							<RenderHtml
 								source={{html: viewFlashcard.content}}
-								contentWidth={deviceWidth}
+								contentWidth={deviceWidth * 0.9}
 							/>
-						</View>
+						</ScrollView>
 						<View
 							style={{
 								display: "flex",
@@ -269,7 +280,102 @@ export default ({theme, user, match}) => {
 					</View>
 				</Card>
 			</Modal>
+			{/* Editing Flashcard Name Modal */}
+			<Modal
+				visible={editingFlashcardNameModal}
+				backdropStyle={styles.backdrop}>
+				<Card disabled={true}>
+					<View>
+						<Text style={{fontSize: 20}}>
+							Editando nome do flashcard
+						</Text>
+						<Divider
+							style={{
+								height: 2.5,
+								backgroundColor:
+									theme === "light" ? "#000" : "#fff",
+								marginTop: deviceHeight * 0.001,
+								marginBottom: deviceHeight * 0.03,
+							}}
+						/>
+						<Text
+							style={{
+								fontSize: 16,
+								marginBottom: deviceHeight * 0.01,
+							}}>
+							Degite o novo nome para o flashcard:{" "}
+							{editingFlashcardName.name}?
+						</Text>
+						<Input
+							label={"Novo nome"}
+							value={editingFlashcardName.newName}
+							onChangeText={newName =>
+								setEditingFlashcardName({
+									...editingFlashcardName,
+									newName,
+								})
+							}
+						/>
+						<View
+							style={{
+								display: "flex",
+								flexDirection: "row",
+								marginTop: deviceHeight * 0.02,
+							}}>
+							<Button
+								style={{marginRight: 10}}
+								status={"success"}
+								accessoryLeft={CheckIcon}
+								onPress={async () => {
+									const updatedFlashcards = [];
+									collection.flashcards.forEach(flashcard => {
+										console.log(
+											flashcard.title,
+											editingFlashcardName.name,
+										);
+										if (
+											flashcard.title ==
+											editingFlashcardName.name
+										) {
+											flashcard.title =
+												editingFlashcardName.newName;
+										}
+										updatedFlashcards.push(flashcard);
+									});
+									collection.flashcards = updatedFlashcards;
 
+									console.log({
+										collection,
+										collection_id: match.params.id,
+									});
+
+									const success = await editCollection({
+										collection,
+										collection_id: match.params.id,
+									});
+									if (success) {
+										queryCollection();
+										setEditingFlashcardNameModal(false);
+									} else {
+										setEditingFlashcardNameModal(true);
+									}
+								}}>
+								Confirmar
+							</Button>
+							<Button
+								style={{marginLeft: 10}}
+								status={"danger"}
+								accessoryLeft={CancelIcon}
+								onPress={() => {
+									setEditingFlashcardName({});
+									setEditingFlashcardNameModal(false);
+								}}>
+								Cancelar
+							</Button>
+						</View>
+					</View>
+				</Card>
+			</Modal>
 			{/* Flashcards */}
 			{!addingNewFlashcard && (
 				<ScrollView>

@@ -121,6 +121,7 @@ export default ({theme}) => {
 								);
 								setVisible(true);
 							}
+							history.push("/");
 						}}>
 						Entrar
 					</Button>
@@ -135,7 +136,9 @@ export default ({theme}) => {
 					<Button
 						onPress={() =>
 							AuthWithGoogle()
-								.then(() => console.log("Login"))
+								.then(() => {
+									history.push("/");
+								})
 								.catch(err => console.log(err))
 						}
 						style={{

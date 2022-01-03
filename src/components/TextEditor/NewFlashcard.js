@@ -27,9 +27,6 @@ export default function ({
 	};
 
 	const CheckIcon = props => <Icon {...props} name={"checkmark-circle-2"} />;
-	const OptionsIcon = props => (
-		<Icon {...props} name={"settings-2-outline"} />
-	);
 	const CancelIcon = props => <Icon {...props} name={"close-circle"} />;
 
 	return (
@@ -37,6 +34,7 @@ export default function ({
 			style={styles.root}
 			behavior={Platform.OS == "ios" ? "padding" : "height"}
 			keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+			keyboardShouldPersistTaps={"always"}
 			enabled={true}>
 			<SafeAreaView
 				style={{flex: 1, height: deviceDimensions.height - 100}}>
@@ -91,7 +89,7 @@ export default function ({
 						backgroundColor: "#3266FF",
 					}}
 					small
-					icon={OptionsIcon}
+					icon="content-save-cog"
 					onPress={() => {
 						setSavingFlashcard(true);
 					}}

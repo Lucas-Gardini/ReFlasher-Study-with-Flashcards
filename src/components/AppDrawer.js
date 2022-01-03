@@ -101,6 +101,7 @@ export default ({drawer, theme, deviceSize, user, logout, onRedirect}) => {
 								appearance={"filled"}
 								status={"danger"}
 								onPress={() => {
+									history.push("/");
 									logout();
 								}}>
 								Sair

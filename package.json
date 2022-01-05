@@ -6,6 +6,8 @@
 		"android": "react-native run-android",
 		"ios": "react-native run-ios",
 		"start": "react-native start",
+		"bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+		"build": "cd android && ./gradlew clean && ./gradlew assembleRelease -x bundleReleaseJsAndAssets && cd ..",
 		"test": "jest",
 		"lint": "eslint ."
 	},
